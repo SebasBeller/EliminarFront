@@ -10,13 +10,12 @@ import {AuthService} from "../servicios/auth.service"
   providedIn: 'root'
 })
 export class EstudiantesService {
-  urlApi:string = 'http://localhost:3000/estudiante';
-
-
-  constructor(private http: HttpClient) { }
 
   auth:any=inject(AuthService);
   
+  urlApi:string = 'https://academicoapi.onrender.com/estudiante'
+  constructor(private http: HttpClient) { }
+
   obtenerEstudiantes(): Observable<EstudiantesMateria[]> {
     let headers=this.auth.getHeadersForAuth();
     return this.http.get<any[]>(this.urlApi,{headers}).pipe(
