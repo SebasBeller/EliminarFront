@@ -1,7 +1,8 @@
 // auth.service.ts
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable,inject} from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable,BehaviorSubject  } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,16 @@ export class AuthService {
   private estudianteUrl  ='http://localhost:3000/estudiante';
   private userSubject = new BehaviorSubject<any>(null);
 
+
   constructor(private http: HttpClient) {}
+
+  getHeadersForAuth(){
+    let token = localStorage.getItem('authToken'); 
+    let headers = new HttpHeaders({
+        Authorization: `Bearer ${token}` 
+    })
+    return headers;
+  }
 
   login(email: string, password: string): Observable<any> {
 
@@ -23,6 +33,7 @@ export class AuthService {
 
 
   saveUserData(user: any): void {
+    
 
     localStorage.setItem('userId', user.id_estudiante || user.id_profesor || '');
     localStorage.setItem('userType', user.tipo);
@@ -54,7 +65,8 @@ export class AuthService {
   }
 
   obtenerFotoPerfil(id: number): Observable<any> {
-    return this.http.get(`${this.estudianteUrl}/${id}`);
+    let headers=this.getHeadersForAuth();
+    return this.http.get(`${this.estudianteUrl}/${id}`,{headers});
   }
 
   logout(): void {
